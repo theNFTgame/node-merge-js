@@ -12,13 +12,13 @@ Import
 ====================
 
 merge-js resolves dependencies between files and merges them into a single file. In order to define
-a dependency, simply use a import statement within a comment;
+a dependency, simply use a commented import statement in your js files like this;
 
     // import("lib/jquery.js")
     // import("lib/underscore.js")
 
     $(function() {
-        alert("Tes"); 
+        alert("Test"); 
     });
 
 Connect Middleware
