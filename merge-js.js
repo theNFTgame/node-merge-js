@@ -193,8 +193,6 @@ var mergejs = module.exports = {
             });
 
             function compile() {
-                console.log("Compile");
-
                 mergejs.merge(srcpath, function(err, data) {
                     if (err)
                         return next(err);

@@ -3,12 +3,14 @@
 
     "description" : "JavaScript merger and uglifier toolkit and middleware",
 
+	"homepage" : "https://github.com/eknkc/node-merge-js",
+
     "author"  : {
             "name"  : "Ekin Koc",
             "email" : "ekin@eknkc.com"
     },
 
-    "version" : "1.0.1",
+    "version" : "1.0.2",
 
     "main"    : "./merge-js.js",
 
