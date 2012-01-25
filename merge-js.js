@@ -146,8 +146,6 @@ var mergejs = module.exports = {
             var srcpath = path.resolve(path.join(src, append ? pname.replace('.merged.js', '.js') : pname));
             var dstpath = path.resolve(path.join(dest, pname));
 
-            console.log(srcpath);
-
             fs.stat(srcpath, function(err, sstats) {
                 if (err && err.code == 'ENOENT')
                     return next();

@@ -8,6 +8,45 @@ result.
 You can install the library through the Node Package Manager by running
 `npm install merge-js`.
 
+Import
+====================
+
+merge-js resolves dependencies between files and merges them into a single file. In order to define
+a dependency, simply use a import statement within a comment;
+
+    // import("lib/jquery.js")
+    // import("lib/underscore.js")
+
+    $(function() {
+        alert("Tes"); 
+    });
+
+Connect Middleware
+====================
+
+merge-js has been developed to be used primarily with [Connect][2]. Sample for activating
+merge-js in Express:
+
+    app.use(require("merge-js").middleware({ 
+        src: __dirname + "/assets", 
+        dest: __dirname + "/public" 
+    }));
+
+In this case, merge looks up for the js files in /assets dir and compiles them to /public dir.
+
+Configuration
+-------------
+
+The following options are supported:
+
+ * `src`: Source directory of JavaScript files.
+ * `dest`: Destination directory to place uglified files. If omitted, this will
+   default to match `src` and your generated files will be suffixed with
+   `.merged.js` rather than just `.js`.
+ * `mangle`: Boolean indicating whether variable names should be mangled.
+ * `squeeze`: Boolean indicating whether the code should be squeezed.
+ * `ext`: Boolean indicating whether to use the `.merged.js` extension for
+   generated files.
 
 Developed By
 ============
