@@ -43,6 +43,7 @@ The following options are supported:
  * `dest`: Destination directory to place uglified files. If omitted, this will
    default to match `src` and your generated files will be suffixed with
    `.merged.js` rather than just `.js`.
+ * `uglify`: Boolean indicating whether the code should be uglified at all.
  * `mangle`: Boolean indicating whether variable names should be mangled.
  * `squeeze`: Boolean indicating whether the code should be squeezed.
  * `ext`: Boolean indicating whether to use the `.merged.js` extension for
