@@ -11,7 +11,7 @@ var uglify = require("uglify-js"),
 
 var mergejs = module.exports = {
     loadGraph: function(rootfile, callback) {
-        var importex = /^[\s]*\/\/[\s]*import[\s]*\([\s]*['"][\s]*([A-z0-9_\.\\\/-]+)[\s]*['"][\s]*\)[\s]*$/gm;
+        var importex = /^[\s]*\/\/[\s]*import[\s]*\([\s]*['"][\s]*([A-z0-9_\.\\\/-]+)[\s]*['"][\s]*\)[\s]*;?[\s]*$/gm;
 
         var stack = [ rootfile ];
 
@@ -127,10 +127,10 @@ var mergejs = module.exports = {
         }
 
         var dest = options.dest || src;
-        var force = options.force || false;
-        var mangle = options.mangle || true;
-        var squeeze = options.squeeze || true;
+        var mangle = options.mangle == undefined ? true : options.mangle;
+        var squeeze = options.squeeze == undefined ? true : options.squeeze;
         var append = options.ext || (dest === src ? true : false);
+        var uglify = options.uglify == undefined ? true : options.uglify;
 
         var jsex = append ? /\.merged.js$/i : /\.js$/i;
 
@@ -202,14 +202,21 @@ var mergejs = module.exports = {
                     mkdirp(path.dirname(dstpath), 0700, function(err){
                         if (err) 
                             return next(err);
+                        
+                        var fnl = null;
 
-                        var ast = jsp.parse(data.merged);
-                        if (mangle)
-                            ast = pro.ast_mangle(ast);
-                        if (squeeze)
-                            ast = pro.ast_squeeze(ast);
+                        if (uglify) {
+                            var ast = jsp.parse(data.merged);
 
-                        var fnl = pro.gen_code(ast);                           
+                            if (mangle)
+                                ast = pro.ast_mangle(ast);
+                            if (squeeze)
+                                ast = pro.ast_squeeze(ast);
+
+                            fnl = pro.gen_code(ast); 
+                        } else {
+                            fnl = data.merged;
+                        }                     
 
                         fs.writeFile(dstpath, fnl, 'utf8', next);
                     });
