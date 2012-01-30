@@ -116,7 +116,7 @@ var mergejs = module.exports = {
     },
     
     middleware: function(options) {
-        cache = {};
+        var cache = {};
 
         options = options || {};
 

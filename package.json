@@ -10,7 +10,7 @@
             "email" : "ekin@eknkc.com"
     },
 
-    "version" : "1.0.3",
+    "version" : "1.0.4",
 
     "main"    : "./merge-js.js",
 
