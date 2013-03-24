@@ -1,6 +1,4 @@
-var uglify = require("uglify-js"),
-    jsp = require("uglify-js").parser,
-    pro = require("uglify-js").uglify,
+var uglifyjs = require("uglify-js"),
     mkdirp = require("mkdirp"),
     events = require('events'),
     util   = require('util'),
@@ -54,21 +52,21 @@ var mergejs = module.exports = {
 
                         graph.deps.push({
                             from: current,
-                            to: dep 
+                            to: dep
                         });
                     }
 
                     graph.files.push(file);
 
                     return process.nextTick(function() { load(callback); });
-                });                
+                });
             });
         };
     },
 
     mergeGraph: function(graph, callback) {
         var sorted = [];
-        var stack = _.filter(graph.files, function(x) { 
+        var stack = _.filter(graph.files, function(x) {
             return _.filter(graph.deps, function(d) {
                 return d.to === x.filename;
             }).length == 0;
@@ -114,7 +112,7 @@ var mergejs = module.exports = {
             });
         });
     },
-    
+
     middleware: function(options) {
         var cache = {};
 
@@ -135,9 +133,9 @@ var mergejs = module.exports = {
         var jsex = append ? /\.merged.js$/i : /\.js$/i;
 
         return function(req, res, next) {
-            if ('GET' !== req.method && 'HEAD' !== req.method) 
+            if ('GET' !== req.method && 'HEAD' !== req.method)
                 return next();
-            
+
             var pname = url.parse(req.url).pathname;
 
             if (!jsex.test(pname))
@@ -200,28 +198,39 @@ var mergejs = module.exports = {
                     cache[srcpath] = data.files;
 
                     mkdirp(path.dirname(dstpath), 0700, function(err){
-                        if (err) 
+                        if (err)
                             return next(err);
-                        
+
                         var fnl = null;
 
                         if (uglify) {
-                            var ast = jsp.parse(data.merged);
+                            var ast = uglifyjs.parse(data.merged);
 
-                            if (mangle)
-                                ast = pro.ast_mangle(ast);
-                            if (squeeze)
-                                ast = pro.ast_squeeze(ast);
+                            ast.figure_out_scope();
 
-                            fnl = pro.gen_code(ast); 
+                            if (squeeze) {
+                                var compressor = uglifyjs.Compressor({
+                                    warnings: false
+                                });
+
+                                ast = ast.transform(compressor);
+                            }
+
+                            if (mangle){
+                                ast.figure_out_scope();
+                                ast.compute_char_frequency();
+                                ast.mangle_names();
+                            }
+
+                            fnl = ast.print_to_string();
                         } else {
                             fnl = data.merged;
-                        }                     
+                        }
 
                         fs.writeFile(dstpath, fnl, 'utf8', next);
                     });
-                });                
+                });
             }
-        };        
+        };
     }
 };
